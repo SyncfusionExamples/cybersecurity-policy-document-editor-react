@@ -17,30 +17,59 @@ export const SECTIONS: Record<string, string> = {
     'This policy is reviewed annually. Review Date: 1 January each year. Approval: Chief Information Officer.',
 };
 
+const STYLE_DEFS: Record<string, object> = {
+  Title: {
+    type: 'Paragraph',
+    name: 'Title',
+    basedOn: 'Normal',
+    next: 'Normal',
+    characterFormat: { fontSize: 28, fontFamily: 'Calibri Light' },
+    paragraphFormat: { spaceAfter: 6 },
+  },
+  'Heading 1': {
+    type: 'Paragraph',
+    name: 'Heading 1',
+    basedOn: 'Normal',
+    next: 'Normal',
+    link: 'Heading 1 Char',
+    characterFormat: { fontSize: 16, fontFamily: 'Calibri Light', fontColor: '#2F5496' },
+    paragraphFormat: { beforeSpacing: 12, afterSpacing: 0, outlineLevel: 'Level1' },
+  },
+};
+
+// The blank document may not define every built-in style; create it first,
+// otherwise applyStyle fails with "undefined is not valid JSON".
+function applyStyle(editor: DocumentEditor, name: string) {
+  if (!editor.documentHelper.styles.findByName(name) && STYLE_DEFS[name]) {
+    editor.editor.createStyle(JSON.stringify(STYLE_DEFS[name]));
+  }
+  editor.editor.applyStyle(name);
+}
+
 // Appends a Heading 1 + body paragraph at the end of the document.
 export function insertSection(editor: DocumentEditor, title: string) {
   editor.selection.moveToDocumentEnd();
-  editor.editor.applyStyle('Heading 1');
+  applyStyle(editor, 'Heading 1');
   editor.editor.insertText(title);
   editor.editor.onEnter();
-  editor.editor.applyStyle('Normal');
+  applyStyle(editor, 'Normal');
   editor.editor.insertText(SECTIONS[title]);
   editor.editor.onEnter();
 }
 
 export function generatePolicy(editor: DocumentEditor) {
   editor.openBlank();
-  editor.editor.applyStyle('Title');
+  applyStyle(editor, 'Title');
   editor.editor.insertText('Information Security Policy');
   editor.editor.onEnter();
-  editor.editor.applyStyle('Normal');
+  applyStyle(editor, 'Normal');
   editor.editor.insertText('ABC MSP - Version 1.0');
   editor.editor.onEnter();
   editor.editor.insertPageBreak();
-  editor.editor.applyStyle('Heading 1');
+  applyStyle(editor, 'Heading 1');
   editor.editor.insertText('Table of Contents');
   editor.editor.onEnter();
-  editor.editor.applyStyle('Normal');
+  applyStyle(editor, 'Normal');
   editor.editor.insertTableOfContents();
   editor.editor.insertPageBreak();
   Object.keys(SECTIONS).forEach((title) => insertSection(editor, title));

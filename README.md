@@ -1,7 +1,5 @@
 # Cybersecurity Policy Document Editor (React + Next.js)
 
-## Description and Purpose
-
 A proof-of-concept web app that shows how a cybersecurity policy (for example an *Information Security Policy*) can be authored, validated, reviewed and exported inside the browser with the [Syncfusion React Document Editor](https://www.syncfusion.com/react-components/react-word-processor).
 
 On start-up the app generates a complete, styled policy document (title page, table of contents, seven policy sections, header and footer with page numbers). A side panel then exposes programmatic operations on that document:
@@ -209,11 +207,9 @@ npm run build
 npm start
 ```
 
-### Notes
-
-- Operations that need server-side processing (such as importing files) use Syncfusion's public demo service, set in `serviceUrl` in `Editor.tsx`. For production, host your own Document Editor web service and update that URL.
-- `NEXT_PUBLIC_` variables are embedded in the client bundle, which is expected for Syncfusion client-side license registration.
-- Dependencies are declared as `*` / `latest`. Pin versions in `package.json` for reproducible builds.
+> Notes
+> - Operations that require server-side processing, such as file imports, use Syncfusion's public demo service configured through the serviceUrl property in Editor.tsx. For production environments, host your own Document Editor web service and update the serviceUrl accordingly. For more information, refer to the documentation: [Import in React DOCX Editor | Syncfusion](https://help.syncfusion.com/document-processing/word/word-processor/react/import).
+> - Dependencies are declared as `*` / `latest`. Pin versions in `package.json` for reproducible builds.
 
 ### Suggested walkthrough
 

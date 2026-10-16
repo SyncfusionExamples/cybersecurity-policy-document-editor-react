@@ -73,37 +73,79 @@ export default function Editor() {
     pdf.save('Information Security Policy.pdf');
   };
 
-  const Btn = ({ label, onClick }: { label: string; onClick: () => void }) => (
-    <button className="e-btn" onClick={onClick}>{label}</button>
-  );
+  const sections: { title: string; hint: string; actions: [string, () => void][] }[] = [
+    {
+      title: '1. Authoring & Word Export',
+      hint: 'High-fidelity editing; DOCX/PDF output',
+      actions: [
+        ['Save DOCX', () => editor().save('Information Security Policy', 'Docx')],
+        ['Export PDF', exportPdf],
+      ],
+    },
+    {
+      title: '2. Print Layout',
+      hint: 'Print-oriented presentation',
+      actions: [
+        ['Print', () => editor().print()],
+        ['Update TOC', () => editor().editor.updateToc()],
+      ],
+    },
+    {
+      title: '3. Generate & Insert',
+      hint: 'Programmatic content insertion',
+      actions: [
+        ['Generate Security Policy', () => generatePolicy(editor())],
+        ...Object.keys(SECTIONS).map((t): [string, () => void] => [`Insert ${t}`, () => insertSection(editor(), t)]),
+      ],
+    },
+    {
+      title: '4. Read Content',
+      hint: 'Programmatic access to document text',
+      actions: [
+        ['Read Content', readContent],
+        ['Search', search],
+        ['Validate Policy', validate],
+      ],
+    },
+    {
+      title: '5. Comments',
+      hint: 'Review and collaboration',
+      actions: [
+        ['Add Comment', addComment],
+        ['Comment Summary', commentSummary],
+      ],
+    },
+    {
+      title: '6. Versioning & Approval',
+      hint: 'Track changes and revision decisions',
+      actions: [
+        [`Track Changes: ${trackChanges ? 'On' : 'Off'}`, toggleTrackChanges],
+        ['Previous Revision', () => editor().selection.navigatePreviousRevision()],
+        ['Next Revision', () => editor().selection.navigateNextRevision()],
+        ['Accept All', () => editor().revisions.acceptAll()],
+        ['Reject All', () => editor().revisions.rejectAll()],
+      ],
+    },
+  ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, padding: 6 }}>
-        {Object.keys(SECTIONS).map((t) => (
-          <Btn key={t} label={`Insert ${t}`} onClick={() => insertSection(editor(), t)} />
+    <div className="app">
+      <aside className="side">
+        <h1>Security Policy Editor</h1>
+        {sections.map((s) => (
+          <section key={s.title}>
+            <h2>{s.title}</h2>
+            <p>{s.hint}</p>
+            <div className="actions">
+              {s.actions.map(([label, fn]) => (
+                <button key={label} className="e-btn" onClick={fn}>{label}</button>
+              ))}
+            </div>
+          </section>
         ))}
-        <Btn label="Generate Security Policy" onClick={() => generatePolicy(editor())} />
-        <Btn label="Update TOC" onClick={() => editor().editor.updateToc()} />
-      </div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, padding: 6 }}>
-        <Btn label="Read Content" onClick={readContent} />
-        <Btn label="Search" onClick={search} />
-        <Btn label="Validate Policy" onClick={validate} />
-        <Btn label="Add Comment" onClick={addComment} />
-        <Btn label="Comment Summary" onClick={commentSummary} />
-        <Btn label={`Track Changes: ${trackChanges ? 'On' : 'Off'}`} onClick={toggleTrackChanges} />
-        <Btn label="Previous Revision" onClick={() => editor().selection.navigatePreviousRevision()} />
-        <Btn label="Next Revision" onClick={() => editor().selection.navigateNextRevision()} />
-        <Btn label="Accept All" onClick={() => editor().revisions.acceptAll()} />
-        <Btn label="Reject All" onClick={() => editor().revisions.rejectAll()} />
-        <Btn label="Save DOCX" onClick={() => editor().save('Information Security Policy', 'Docx')} />
-        <Btn label="Export PDF" onClick={exportPdf} />
-      </div>
-      {output.length > 0 && (
-        <pre style={{ margin: 0, padding: '6px 12px', background: '#f5f5f5' }}>{output.join('\n')}</pre>
-      )}
-      <div style={{ flex: 1, minHeight: 0 }}>
+        {output.length > 0 && <pre className="out" aria-live="polite">{output.join('\n')}</pre>}
+      </aside>
+      <main className="main">
         <DocumentEditorContainerComponent
           ref={container}
           height="100%"
@@ -111,7 +153,7 @@ export default function Editor() {
           created={() => generatePolicy(editor())}
           serviceUrl="https://document.syncfusion.com/web-services/docx-editor/api/documenteditor/"
         />
-      </div>
+      </main>
     </div>
   );
 }

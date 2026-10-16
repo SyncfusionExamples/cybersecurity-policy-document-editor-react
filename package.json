@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@syncfusion/ej2-base": "*",
+    "@syncfusion/ej2-pdf-export": "*",
     "@syncfusion/ej2-react-documenteditor": "*",
     "@syncfusion/ej2-tailwind3-theme": "*",
     "next": "latest",

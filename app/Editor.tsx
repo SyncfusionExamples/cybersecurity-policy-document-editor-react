@@ -32,6 +32,7 @@ export default function Editor() {
   const readContent = () => {
     editor().selection.selectAll();
     const text = editor().selection.text;
+    console.log('Document Text:', text);
     editor().selection.moveToDocumentStart();
     const words = text.split(/\s+/).filter(Boolean).length;
     const sfdtLength = editor().serialize().length;

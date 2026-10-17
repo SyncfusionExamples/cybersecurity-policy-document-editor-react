@@ -1,2 +1,5 @@
 /** @type {import('next').NextConfig} */
-export default {};
+export default {
+  basePath: '/policy-document-editor-react',
+  output: 'standalone',
+};
